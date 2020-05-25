@@ -1,0 +1,25 @@
+:root {
+	--background_color: #17181c;
+	--box_background_color: #1b1d22;
+	--header_background_color: #23272f;
+	--secondary_text_color: #545e72;
+	--primary_text_color: white;
+	--warning_color: #e77330;
+	--success_color: #8de969;
+	--error_color: #fb3640;
+
+	color: var(--primary_text_color);
+	background-color: var(--background_color);
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	font-family: "Overpass Mono", monospace;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}

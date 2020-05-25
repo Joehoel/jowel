@@ -1,0 +1,16 @@
+# Exclude everything by default
+/**/*
+
+# But don't exclude folders (i.e. only exclude files)
+!/**/*/
+
+dist/
+node_modules/
+
+!*.css
+!*.html
+!*.js
+!*.json
+!*.scss
+!*.ts
+!*.vue

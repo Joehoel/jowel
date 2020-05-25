@@ -1,0 +1,19 @@
+{
+	"extends": "./tsconfig.json",
+	"exclude": ["src/client"],
+	"compilerOptions": {
+		"noEmit": false,
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"paths": {
+			"@client-components/*": ["./src/client/components/*"],
+			"@client-scripts/*": ["./src/client/scripts/*"],
+			"@client-styles/*": ["./src/client/styles/*"],
+			"@client-views/*": ["./src/client/views/*"],
+			"@common-modules/*": ["./src/common/modules/*"],
+			"@common-scripts/*": ["./src/common/scripts/*"],
+			"@server-scripts/*": ["./src/server/scripts/*"],
+			"@server-templates/*": ["./src/server/templates/*"]
+		}
+	}
+}
