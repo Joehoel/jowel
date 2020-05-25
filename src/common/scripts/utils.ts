@@ -191,3 +191,32 @@ export function waitForMillis(millis: number): Promise<void> {
 		}, millis);
 	});
 }
+export function line(
+	ctx: CanvasRenderingContext2D,
+	width: number,
+	x1: number,
+	y1: number,
+	x2: number,
+	y2: number
+) {
+	ctx.lineWidth = width;
+	ctx.beginPath();
+	ctx.moveTo(x1, y1);
+	ctx.lineTo(x2, y2);
+	ctx.stroke();
+}
+export function radians(deg: number): number {
+	return (deg * Math.PI) / 180;
+}
+
+export function constrain(n: number, low: number, high: number): number {
+	return Math.max(Math.min(n, high), low);
+}
+export function circle(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
+	ctx.beginPath();
+	ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fill();
+	ctx.lineWidth = 1;
+	ctx.stroke();
+}

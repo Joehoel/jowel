@@ -71,14 +71,17 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
+			"@client-classes": `${__dirname}/src/client/classes`,
 			"@client-components": `${__dirname}/src/client/components`,
 			"@client-scripts": `${__dirname}/src/client/scripts`,
 			"@client-styles": `${__dirname}/src/client/styles`,
 			"@client-views": `${__dirname}/src/client/views`,
+			"@common-classes": `${__dirname}/src/common/classes`,
 			"@common-modules": `${__dirname}/src/common/modules`,
 			"@common-scripts": `${__dirname}/src/common/scripts`,
 			"@server-scripts": `${__dirname}/src/server/scripts`,
 			"@server-templates": `${__dirname}/src/server/templates`,
+			"@server-classes": `${__dirname}/src/server/classes`,
 		},
 		extensions: [".ts", ".js", ".scss"],
 	},

@@ -3,7 +3,11 @@ import EXPRESS, { NextFunction, Request, Response } from "express";
 const router = EXPRESS.Router();
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => {
-	res.render("index", {});
+	res.sendFile("./index.html", { root: "./dist/client" });
+});
+
+router.get("/pong", (req: Request, res: Response, next: NextFunction) => {
+	res.sendFile("./pong.html", { root: "./dist/client" });
 });
 
 router.get("/*", (req: Request, res: Response, next: NextFunction) => {

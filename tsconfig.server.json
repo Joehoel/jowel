@@ -6,12 +6,15 @@
 		"outDir": "./dist",
 		"baseUrl": "./",
 		"paths": {
+			"@client-classes/*": ["./src/client/classes/*"],
 			"@client-components/*": ["./src/client/components/*"],
 			"@client-scripts/*": ["./src/client/scripts/*"],
 			"@client-styles/*": ["./src/client/styles/*"],
 			"@client-views/*": ["./src/client/views/*"],
+			"@common-classes/*": ["./src/common/classes/*"],
 			"@common-modules/*": ["./src/common/modules/*"],
 			"@common-scripts/*": ["./src/common/scripts/*"],
+			"@server-classes/*": ["./src/server/classes/*"],
 			"@server-scripts/*": ["./src/server/scripts/*"],
 			"@server-templates/*": ["./src/server/templates/*"]
 		}

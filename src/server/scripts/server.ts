@@ -4,16 +4,18 @@ import HTTP from "http";
 import CONFIG from "./config";
 import router from "./routes";
 import { setupWebpackMiddleware } from "./webpack_middleware";
+import game from "./game";
 
 const app: Application = EXPRESS();
 
 setupWebpackMiddleware(app);
 
-app.set("view engine", "ejs");
 app.set("views", "./dist/client");
 app.use(EXPRESS.static("./dist/client"));
 app.get("/*", router);
 const server = HTTP.createServer(app);
+
+game(server);
 
 server.listen(CONFIG.PORT, () =>
 	console.info(
