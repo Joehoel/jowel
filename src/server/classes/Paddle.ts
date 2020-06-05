@@ -1,5 +1,5 @@
 import Vector2 from "@common-classes/Vector2";
-import Entity from "./Entity";
+import Entity from "@common-classes/Entity";
 
 export default class Paddle extends Entity {
 	public size: Vector2;

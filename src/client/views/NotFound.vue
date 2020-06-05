@@ -1,5 +1,7 @@
 <template>
-<body></body>
+	<section>
+		<h1>404 Not found</h1>
+	</section>
 </template>
 
 <script lang="ts">

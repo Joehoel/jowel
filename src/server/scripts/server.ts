@@ -21,6 +21,6 @@ server.listen(CONFIG.PORT, () =>
 	console.info(
 		`${new Date().toLocaleTimeString(undefined, {
 			hour12: false,
-		})} > Server started on port ${CONFIG.PORT}`
+		})} > Server running at http://localhost:${CONFIG.PORT}`
 	)
 );

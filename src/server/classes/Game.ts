@@ -3,7 +3,7 @@ import Player, { Side } from "./Player";
 import { random } from "@common-scripts/utils";
 import Vector2 from "@common-classes/Vector2";
 import Paddle from "./Paddle";
-import Ball from "./Ball";
+import Ball from "@common-classes/Ball";
 
 export default class Game {
 	public readonly name: string;
@@ -18,6 +18,7 @@ export default class Game {
 		new Paddle(new Vector2(), new Vector2(), new Vector2(20, 100), false),
 	];
 	private readonly ball: Ball = new Ball(new Vector2(), new Vector2(), 6);
+	private tickTimer: number = -1;
 
 	constructor(name: string, io: Server) {
 		this.name = name;
@@ -70,7 +71,7 @@ export default class Game {
 			random(-maxAngle, maxAngle),
 			random(Math.PI - maxAngle, Math.PI + maxAngle),
 		]);
-		const r = 5;
+		const r = 2;
 		const ballSpeed = new Vector2(r * Math.cos(angle), r * Math.sin(angle));
 		this.ball.speed.set(ballSpeed);
 
@@ -80,7 +81,7 @@ export default class Game {
 		this.paddles[1].pos.set(centerOffset, 0);
 		this.ball.pos.set(0, 0);
 
-		this.io.emit("start", { tps: this.tps });
+		this.io.emit("start", { tps: this.tps, ball: this.ball, size: this.size });
 		this.io.emit("ball", { pos: this.ball.pos, speed: this.ball.speed });
 		this.io.emit("paddle", {
 			isLeft: true,
@@ -92,8 +93,21 @@ export default class Game {
 			pos: this.paddles[1].pos,
 			speed: this.paddles[1].speed,
 		});
-		setInterval(this.tick, 1000 / this.tps);
+		if (this.tickTimer !== -1) clearInterval(this.tickTimer);
+		this.tickTimer = setInterval(() => this.tick(), 1000 / this.tps);
 	}
 
-	private tick() {}
+	private tick() {
+		if (this.ball.pos.y <= -this.height / 2 || this.ball.pos.y >= this.height / 2) {
+			this.ball.speed.set(this.ball.speed.x, -this.ball.speed.y);
+			this.io.emit("ball", this.ball);
+		}
+
+		if (this.ball.pos.x <= -this.width / 2 || this.ball.pos.x >= this.width / 2) {
+			this.ball.speed.set(-this.ball.speed.x, this.ball.speed.y);
+			this.io.emit("ball", this.ball);
+		}
+
+		this.ball.pos.add(this.ball.speed);
+	}
 }

@@ -7,8 +7,8 @@
 		"build:server": "tsc -p ./tsconfig.server.json",
 		"build:webpack": "webpack -p",
 		"build": "tsc -p . && npm run build:server && npm run build:webpack",
-		"start:dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register src/server/scripts/server.ts",
-		"start:prod": "npm run build:webpack && cross-env NODE_ENV=production ts-node-dev -r tsconfig-paths/register src/server/scripts/server.ts"
+		"start:dev": "cross-env NODE_ENV=development ts-node-dev --no-notify -r tsconfig-paths/register src/server/scripts/server.ts",
+		"start:prod": "npm run build:webpack && cross-env NODE_ENV=production ts-node-dev --no-notify -r tsconfig-paths/register src/server/scripts/server.ts"
 	},
 	"keywords": [],
 	"author": "",

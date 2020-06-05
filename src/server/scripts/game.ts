@@ -29,6 +29,7 @@ export default (server: Server) => {
 
 		if (room.players.length == 2) {
 			room.startGame();
+			console.log("start game");
 		}
 		// console.log(player);
 		// room.players.push(player);

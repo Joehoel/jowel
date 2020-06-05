@@ -13,6 +13,7 @@ export default class Vector2 {
 			this.y = y;
 		}
 	}
+
 	public set(vector: Vector2): void;
 	public set(x: number, y: number): void;
 	public set(xOrVector: number | Vector2, y?: number) {
@@ -24,6 +25,7 @@ export default class Vector2 {
 			this.y = y;
 		}
 	}
+
 	public add(other: Vector2) {
 		this.x += other.x;
 		this.y += other.y;
