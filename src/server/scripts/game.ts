@@ -3,45 +3,51 @@ import socketio, { Server as IOServer } from "socket.io";
 import Game from "@server-classes/Game";
 import Player from "@server-classes/Player";
 
-const rooms: Game[] = [];
+const games: Game[] = [];
 
 export default (server: Server) => {
 	const io: IOServer = socketio(server);
 
 	io.on("connection", socket => {
-		let room: Game;
+		socket.on("message", console.log);
+
+		let game: Game;
 		let player: Player;
 
-		const index = rooms.findIndex(room => room.players.length < 2);
+		const index = games.findIndex(game => game.players.length < 2);
 
-		if (rooms.length === 0 || index === -1) {
+		if (index === -1) {
 			// console.log(rooms.length);
 			// console.log(index);
-			room = new Game(`room-${rooms.length}`, io);
+			game = new Game(`game-${games.length}`, io);
 
-			rooms.push(room);
+			games.push(game);
 			// console.log({ rooms });
 		} else {
-			room = rooms[index];
+			game = games[index];
 		}
 
-		room.addPlayer(socket);
+		socket.on("ping", () => {
+			console.log("pinging");
+			socket.emit("pong");
+		});
 
-		if (room.players.length == 2) {
-			room.startGame();
-			console.log("start game");
+		game.addPlayer(socket);
+
+		if (game.players.length == 2) {
+			game.startGame();
 		}
 		// console.log(player);
 		// room.players.push(player);
 
 		socket.on("disconnect", () => {
-			const index = room.players.indexOf(player);
-			room.players.splice(index, 1);
-			if (room.players.length === 0) {
-				rooms.splice(rooms.indexOf(room), 1);
+			game.removePlayer(socket);
+			if (game.isEmpty) {
+				games.splice(games.indexOf(game), 1);
 			}
 		});
-		socket.emit("message", `${socket.id} joined ${room.name}`);
+		socket.send(`${socket.id} joined ${game.name}`);
+		console.log(games.map(g => g.players.length));
 	});
 	return io;
 };

@@ -26,8 +26,15 @@ export default class Vector2 {
 		}
 	}
 
-	public add(other: Vector2) {
-		this.x += other.x;
-		this.y += other.y;
+	public add(vector: Vector2): void;
+	public add(x: number, y: number): void;
+	public add(xOrVector: number | Vector2, y?: number) {
+		if (xOrVector instanceof Vector2) {
+			this.x += xOrVector.x;
+			this.y += xOrVector.y;
+		} else {
+			this.x += xOrVector;
+			this.y += y;
+		}
 	}
 }

@@ -1,6 +1,8 @@
 <template>
 	<div class="footer">
-		<span>Made by: Joël Kuijper</span>
+		<span>
+			<strong>Made by: Joël Kuijper</strong>
+		</span>
 
 		<div class="inner">
 			<a class="icon github" target="_blank" href="https://github.com/Joehoel">

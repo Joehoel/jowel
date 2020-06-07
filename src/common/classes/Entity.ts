@@ -8,4 +8,9 @@ export default class Entity {
 		this.pos = pos;
 		this.speed = speed;
 	}
+
+	public set(other: Entity) {
+		this.pos.set(other.pos.x, other.pos.y);
+		this.speed.set(other.speed.x, other.speed.y);
+	}
 }

@@ -10,6 +10,7 @@
 			"@client-scripts/*": ["./src/client/scripts/*"],
 			"@client-styles/*": ["./src/client/styles/*"],
 			"@client-views/*": ["./src/client/views/*"],
+			"@common-enums/*": ["./src/common/enums/*"],
 			"@common-classes/*": ["./src/common/classes/*"],
 			"@common-modules/*": ["./src/common/modules/*"],
 			"@common-scripts/*": ["./src/common/scripts/*"],

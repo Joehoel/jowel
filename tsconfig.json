@@ -44,11 +44,13 @@
 		"moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
 		"baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
 		"paths": {
+			"@client-assets/*": ["./src/client/assets/*"],
 			"@client-classes/*": ["./src/client/classes/*"],
 			"@client-components/*": ["./src/client/components/*"],
 			"@client-scripts/*": ["./src/client/scripts/*"],
 			"@client-styles/*": ["./src/client/styles/*"],
 			"@client-views/*": ["./src/client/views/*"],
+			"@common-enums/*": ["./src/common/enums/*"],
 			"@common-classes/*": ["./src/common/classes/*"],
 			"@common-modules/*": ["./src/common/modules/*"],
 			"@common-scripts/*": ["./src/common/scripts/*"],

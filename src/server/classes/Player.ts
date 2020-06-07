@@ -1,19 +1,21 @@
 import { Socket } from "socket.io";
 import Game from "./Game";
-
-export enum Side {
-	Left = "left",
-	Right = "right",
-}
+import Side from "@common-enums/Side";
+import Move from "@common-enums/Move";
+import Paddle from "@common-classes/Paddle";
 
 export default class Player {
-	private socket: Socket;
+	public readonly socket: Socket;
 	public readonly side: Side;
-	private room: Game;
+	public readonly game: Game;
+	public readonly paddle: Paddle;
+	public move: Move;
 
-	constructor(socket: Socket, side: Side, room: Game) {
+	constructor(socket: Socket, side: Side, game: Game, paddle: Paddle) {
 		this.socket = socket;
 		this.side = side;
-		this.room = room;
+		this.game = game;
+		this.move = Move.None;
+		this.paddle = paddle;
 	}
 }

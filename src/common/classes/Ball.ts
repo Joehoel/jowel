@@ -7,4 +7,9 @@ export default class Ball extends Entity {
 		super(pos, speed);
 		this.radius = radius;
 	}
+
+	public set(other: Ball) {
+		super.set(other);
+		this.radius = other.radius;
+	}
 }

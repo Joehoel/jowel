@@ -71,11 +71,13 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
+			"@client-assets": `${__dirname}/src/client/assets`,
 			"@client-classes": `${__dirname}/src/client/classes`,
 			"@client-components": `${__dirname}/src/client/components`,
 			"@client-scripts": `${__dirname}/src/client/scripts`,
 			"@client-styles": `${__dirname}/src/client/styles`,
 			"@client-views": `${__dirname}/src/client/views`,
+			"@common-enums": `${__dirname}/src/common/enums`,
 			"@common-classes": `${__dirname}/src/common/classes`,
 			"@common-modules": `${__dirname}/src/common/modules`,
 			"@common-scripts": `${__dirname}/src/common/scripts`,
@@ -110,6 +112,10 @@ module.exports = {
 			{
 				test: /\.vue$/,
 				loader: "vue-loader",
+			},
+			{
+				test: /\.(png|svg|jpg|gif)$/,
+				use: ["file-loader"],
 			},
 		],
 	},
