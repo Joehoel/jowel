@@ -6,6 +6,7 @@ import Paddle from "@common-classes/Paddle";
 import Ball from "@common-classes/Ball";
 import Side from "@common-enums/Side";
 import Move from "@common-enums/Move";
+import Wall from "@common-classes/Wall";
 
 export default class Game {
 	public readonly name: string;
@@ -18,12 +19,20 @@ export default class Game {
 		[Side.Left, new Paddle(new Vector2(), new Vector2(), new Vector2(20, 100))],
 		[Side.Right, new Paddle(new Vector2(), new Vector2(), new Vector2(20, 100))],
 	]);
+	private readonly walls: Wall[];
 	private readonly ball: Ball = new Ball(new Vector2(), new Vector2(), 6);
 	private tickTimer: number = -1;
 
 	constructor(name: string, io: Server) {
 		this.name = name;
 		this.players = [];
+
+		this.walls = [
+			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
+			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
+			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
+			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
+		];
 
 		// Current room
 		this.io = io.to(this.name);
@@ -56,9 +65,6 @@ export default class Game {
 
 		// Add player to (socket)room
 		socket.join(this.name);
-
-		// Tell client what side the player is (left | right)
-		// socket.emit("side", player.side);
 
 		socket.on("move", (direction: Move) => {
 			player.move = direction;
@@ -100,6 +106,10 @@ export default class Game {
 
 		if (this.tickTimer !== -1) clearInterval(this.tickTimer);
 		this.tickTimer = <number>(<unknown>setInterval(() => this.tick(), 1000 / this.tps));
+	}
+
+	private bigbrain() {
+		const closest = this.ball.closest();
 	}
 
 	private tick() {

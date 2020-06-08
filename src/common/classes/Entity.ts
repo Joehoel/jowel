@@ -1,16 +1,13 @@
 import Vector2 from "@common-classes/Vector2";
 
-export default class Entity {
+export default abstract class Entity {
 	public pos: Vector2;
-	public speed: Vector2;
 
-	constructor(pos: Vector2, speed: Vector2) {
+	constructor(pos: Vector2) {
 		this.pos = pos;
-		this.speed = speed;
 	}
 
 	public set(other: Entity) {
 		this.pos.set(other.pos.x, other.pos.y);
-		this.speed.set(other.speed.x, other.speed.y);
 	}
 }

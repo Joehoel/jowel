@@ -26,8 +26,6 @@ export default class Card extends Vue {
 	background: #efefef;
 	box-shadow: 20px 20px 60px #cbcbcb, -20px -20px 60px #ffffff;
 	padding: 2rem;
-	/* background: linear-gradient(-45deg, rgba(128, 128, 128, 0.22), rgba(255, 255, 255, 0.25));
-		box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.6); */
 	border-radius: 10px;
 	transition: 200ms ease-in;
 

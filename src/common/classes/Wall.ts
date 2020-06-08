@@ -1,11 +1,11 @@
 import Vector2 from "@common-classes/Vector2";
-import LivingEntity from "@common-classes/LivingEntity";
+import Entity from "@common-classes/Entity";
 
-export default class Paddle extends LivingEntity {
+export default class Wall extends Entity {
 	public size: Vector2;
 
-	constructor(pos: Vector2, speed: Vector2, size: Vector2) {
-		super(pos, speed);
+	constructor(pos: Vector2, size: Vector2) {
+		super(pos);
 		this.size = size;
 	}
 
@@ -17,7 +17,7 @@ export default class Paddle extends LivingEntity {
 		return this.size.y;
 	}
 
-	public set(other: Paddle) {
+	public set(other: Wall) {
 		super.set(other);
 		this.size.set(other.size.x, other.size.y);
 	}

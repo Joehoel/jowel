@@ -74,10 +74,15 @@ export default class Pong extends Vue {
 	private started = false;
 	private loop: number;
 	private tps: number = 0;
-	private pressedKeys: Set<Move>;
+	private pressedKeys: Move[] = [Move.None];
+	private lastMove: Move = Move.None;
+	private keycodeToMove: Map<number, Move>;
 
 	private mounted() {
-		this.pressedKeys = new Set();
+		this.keycodeToMove = new Map<number, Move>([
+			[38, Move.Up],
+			[40, Move.Down],
+		]);
 
 		socket.on("message", console.log);
 
@@ -124,30 +129,25 @@ export default class Pong extends Vue {
 	}
 
 	private handleKeydown(e: KeyboardEvent) {
-		switch (e.keyCode) {
-			case 38:
-				this.pressedKeys.add(Move.Up);
-				socket.emit("move", Move.Up);
-				break;
-			case 40:
-				this.pressedKeys.add(Move.Down);
-				socket.emit("move", Move.Down);
-				break;
-		}
+		const move = this.keycodeToMove.get(e.keyCode);
+		if (this.pressedKeys.includes(move)) return;
+
+		this.pressedKeys.push(move);
+		this.updateLastMove();
 	}
 
 	private handleKeyup(e: KeyboardEvent) {
-		switch (e.keyCode) {
-			case 38:
-				this.pressedKeys.delete(Move.Up);
-				break;
-			case 40:
-				this.pressedKeys.delete(Move.Down);
-				break;
-		}
+		const move = this.keycodeToMove.get(e.keyCode);
+		if (!this.pressedKeys.includes(move)) return;
 
-		if (this.pressedKeys.size === 0) {
-			socket.emit("move", Move.None);
+		this.pressedKeys.splice(this.pressedKeys.indexOf(move), 1);
+		this.updateLastMove();
+	}
+
+	private updateLastMove() {
+		if (this.pressedKeys[this.pressedKeys.length - 1] !== this.lastMove) {
+			this.lastMove = this.pressedKeys[this.pressedKeys.length - 1];
+			socket.emit("move", this.lastMove);
 		}
 	}
 }
