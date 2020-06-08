@@ -4,7 +4,6 @@ import { random, map } from "@common-scripts/utils";
 import Vector2 from "@common-classes/Vector2";
 import Paddle from "@common-classes/Paddle";
 import Ball from "@common-classes/Ball";
-import socket from "@client-scripts/socket";
 import Side from "@common-enums/Side";
 import Move from "@common-enums/Move";
 
@@ -12,7 +11,7 @@ export default class Game {
 	public readonly name: string;
 	public readonly players: Player[];
 	private readonly io: Namespace;
-	private readonly tps = 10;
+	private readonly tps = 30;
 
 	private readonly size = new Vector2(600, 400);
 	private readonly paddles: Map<Side, Paddle> = new Map<Side, Paddle>([
@@ -83,7 +82,7 @@ export default class Game {
 			random(-maxAngle, maxAngle),
 			random(Math.PI - maxAngle, Math.PI + maxAngle),
 		]);
-		const r = 40;
+		const r = 400 / this.tps;
 		const ballSpeed = new Vector2(r * Math.cos(angle), r * Math.sin(angle));
 		this.ball.speed.set(ballSpeed);
 
@@ -116,7 +115,7 @@ export default class Game {
 			this.io.emit("ball", this.ball);
 		}
 
-		const playerSpeed = 10;
+		const playerSpeed = 400 / this.tps;
 		for (const player of this.players) {
 			if (player.move === Move.None) continue;
 

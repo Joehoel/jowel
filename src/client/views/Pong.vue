@@ -1,7 +1,13 @@
 <template>
 	<main class="center">
-		<Back route="/" />
+		<!-- <Back route="/" /> -->
+		<div v-if="loading" class="loading">
+			<span class="message">Waiting for another player...</span>
+			<Loader />
+		</div>
+
 		<svg
+			v-else
 			:width="size.x"
 			:height="size.y"
 			:viewBox="`${-size.x/2} ${-size.y/2} ${size.x} ${size.y}`"
@@ -28,7 +34,7 @@
 				class="ball"
 			/>
 		</svg>
-		<Footer />
+		<!-- <Footer /> -->
 	</main>
 </template>
 
@@ -38,6 +44,7 @@ import socket from "@client-scripts/socket";
 
 import Footer from "@client-components/Footer.vue";
 import Back from "@client-components/Back.vue";
+import Loader from "@client-components/Loader.vue";
 
 import { line, circle } from "@common-scripts/utils";
 import Vector2 from "@common-classes/Vector2";
@@ -50,9 +57,12 @@ import Move from "@common-enums/Move";
 	components: {
 		Footer,
 		Back,
+		Loader,
 	},
 })
 export default class Pong extends Vue {
+	private loading: boolean = true;
+
 	private readonly size = new Vector2();
 
 	private readonly ball: Ball = new Ball(new Vector2(), new Vector2(1, 1), 6);
@@ -74,6 +84,7 @@ export default class Pong extends Vue {
 		socket.on(
 			"start",
 			({ tps, ball, size }: { tps: number; ball: Ball; size: { x: number; y: number } }) => {
+				this.loading = false;
 				this.size.set(size.x, size.y);
 				this.started = true;
 				window.addEventListener("keydown", this.handleKeydown);
@@ -93,6 +104,7 @@ export default class Pong extends Vue {
 		});
 
 		socket.on("end", () => {
+			this.loading = true;
 			this.reset();
 		});
 	}
@@ -142,6 +154,17 @@ export default class Pong extends Vue {
 </script>
 
 <style lang="scss">
+.loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	.message {
+		margin-bottom: 2rem;
+	}
+}
+
 .game {
 	box-sizing: content-box;
 	border: 4px solid rgb(73, 73, 73);
