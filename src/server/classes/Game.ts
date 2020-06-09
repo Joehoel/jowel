@@ -12,7 +12,7 @@ export default class Game {
 	public readonly name: string;
 	public readonly players: Player[];
 	private readonly io: Namespace;
-	private readonly tps = 30;
+	private readonly tps = 120;
 
 	private readonly size = new Vector2(600, 400);
 	private readonly paddles: Map<Side, Paddle> = new Map<Side, Paddle>([
@@ -22,16 +22,32 @@ export default class Game {
 	private readonly walls: Wall[];
 	private readonly ball: Ball = new Ball(new Vector2(), new Vector2(), 6);
 	private tickTimer: number = -1;
+	private changedPaddles: Set<Paddle> = new Set<Paddle>();
+	private changedBall = false;
 
 	constructor(name: string, io: Server) {
 		this.name = name;
 		this.players = [];
 
+		const wallSize = new Vector2(2 * this.width, this.height);
+
 		this.walls = [
-			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
-			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
-			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
-			new Wall(new Vector2(0, -this.height / 2), new Vector2(this.width, 0)),
+			new Wall(
+				new Vector2(0, -this.height / 2 - wallSize.y / 2),
+				new Vector2(wallSize.x, wallSize.y)
+			),
+			new Wall(
+				new Vector2(this.width / 2 + wallSize.y / 2, 0),
+				new Vector2(wallSize.y, wallSize.x)
+			),
+			new Wall(
+				new Vector2(0, this.height / 2 + wallSize.y / 2),
+				new Vector2(wallSize.x, wallSize.y)
+			),
+			new Wall(
+				new Vector2(-this.width / 2 - wallSize.y / 2, 0),
+				new Vector2(wallSize.y, wallSize.x)
+			),
 		];
 
 		// Current room
@@ -66,8 +82,19 @@ export default class Game {
 		// Add player to (socket)room
 		socket.join(this.name);
 
+		const paddleSpeed = 400 / this.tps;
 		socket.on("move", (direction: Move) => {
-			player.move = direction;
+			switch (direction) {
+				case Move.Down:
+					player.paddle.speed.set(0, paddleSpeed);
+					break;
+				case Move.Up:
+					player.paddle.speed.set(0, -paddleSpeed);
+					break;
+				default:
+					player.paddle.speed.set(0, 0);
+			}
+			this.changedPaddles.add(player.paddle);
 		});
 	}
 
@@ -98,7 +125,12 @@ export default class Game {
 		this.paddles.get(Side.Right).pos.set(centerOffset, 0);
 		this.ball.pos.set(0, 0);
 
-		this.io.emit("start", { tps: this.tps, ball: this.ball, size: this.size });
+		this.io.emit("start", {
+			tps: this.tps,
+			ball: this.ball,
+			size: this.size,
+			walls: this.walls,
+		});
 		this.io.emit("ball", { pos: this.ball.pos, speed: this.ball.speed });
 		this.paddles.forEach(({ pos, speed, size }, side) => {
 			this.io.emit("paddle", { pos, speed, size }, side);
@@ -108,39 +140,50 @@ export default class Game {
 		this.tickTimer = <number>(<unknown>setInterval(() => this.tick(), 1000 / this.tps));
 	}
 
-	private bigbrain() {
-		const closest = this.ball.closest();
-	}
-
 	private tick() {
-		this.ball.pos.add(this.ball.speed);
+		const [topWall, rightWall, bottomWall, leftWall] = this.walls;
 
-		if (this.ball.pos.y <= -this.height / 2 || this.ball.pos.y >= this.height / 2) {
-			this.ball.speed.set(this.ball.speed.x, -this.ball.speed.y);
-			this.io.emit("ball", this.ball);
-		}
-
-		if (this.ball.pos.x <= -this.width / 2 || this.ball.pos.x >= this.width / 2) {
-			this.ball.speed.set(-this.ball.speed.x, this.ball.speed.y);
-			this.io.emit("ball", this.ball);
-		}
-
-		const playerSpeed = 400 / this.tps;
-		for (const player of this.players) {
-			if (player.move === Move.None) continue;
-
-			switch (player.move) {
-				case Move.Up:
-					player.paddle.pos.add(0, -playerSpeed);
-					break;
-
-				case Move.Down:
-					player.paddle.pos.add(0, playerSpeed);
-					break;
+		// check paddle wall collides
+		this.paddles.forEach(paddle => {
+			paddle.pos.add(paddle.speed);
+			if (paddle.collides(topWall) || paddle.collides(bottomWall)) {
+				paddle.pos.subtract(paddle.speed);
+				paddle.speed.set(0, 0);
+				this.changedPaddles.add(paddle);
 			}
+		});
 
-			const { pos, speed, size } = player.paddle;
-			this.io.emit("paddle", { pos, speed, size }, player.side);
+		this.ball.pos.add(this.ball.speed);
+		if (this.ball.collides(topWall) || this.ball.collides(bottomWall)) {
+			// this.ball.pos.subtract(this.ball.speed);
+			this.ball.speed.multiply(1, -1);
+			// this.ball.pos.add(this.ball.speed);
+			this.changedBall = true;
 		}
+
+		if (this.ball.collides(rightWall) || this.ball.collides(leftWall)) {
+			// this.ball.pos.subtract(this.ball.speed);
+			this.ball.speed.multiply(-1, 1);
+			// this.ball.pos.add(this.ball.speed);
+			this.changedBall = true;
+		}
+		this.io.emit("ball", this.ball);
+		this.paddles.forEach(paddle => {
+			const { pos, speed, size } = paddle;
+			const player = this.players.find(p => p.paddle === paddle);
+			this.io.emit("paddle", { pos, speed, size }, player.side);
+		});
+
+		// if (this.changedBall) {
+		// 	// this.io.emit("ball", this.ball);
+		// 	this.changedBall = false;
+		// }
+
+		// this.changedPaddles.forEach(paddle => {
+		// 	const { pos, speed, size } = paddle;
+		// 	const player = this.players.find(p => p.paddle === paddle);
+		// 	this.io.emit("paddle", { pos, speed, size }, player.side);
+		// 	this.changedPaddles.delete(paddle);
+		// });
 	}
 }

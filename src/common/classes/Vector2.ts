@@ -37,4 +37,28 @@ export default class Vector2 {
 			this.y += y;
 		}
 	}
+
+	public multiply(vector: Vector2): void;
+	public multiply(x: number, y: number): void;
+	public multiply(xOrVector: number | Vector2, y?: number) {
+		if (xOrVector instanceof Vector2) {
+			this.x *= xOrVector.x;
+			this.y *= xOrVector.y;
+		} else {
+			this.x *= xOrVector;
+			this.y *= y;
+		}
+	}
+
+	public subtract(vector: Vector2): void;
+	public subtract(x: number, y: number): void;
+	public subtract(xOrVector: number | Vector2, y?: number) {
+		if (xOrVector instanceof Vector2) {
+			this.x -= xOrVector.x;
+			this.y -= xOrVector.y;
+		} else {
+			this.x -= xOrVector;
+			this.y -= y;
+		}
+	}
 }

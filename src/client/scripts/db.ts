@@ -1,16 +1,7 @@
-import firebase from "firebase";
+import { db } from "@client-scripts/firebase";
 
-const db = firebase.firestore();
-
-// firebase.auth().onAuthStateChanged(async user => {
-//     currentUser = user;
-//     if (currentUser) {
-//       closeModals();
-//       highscoreEl.textContent = await getHighscore(currentUser.uid);
-//     } else {
-//       openModal();
-//     }
-//   });
+// Fix for error: "client is offline"
+db.enablePersistence();
 
 export async function getUsers() {
 	const snapshot = await db.collection("users").get();
@@ -27,16 +18,6 @@ export async function getHighscore(uid) {
 	return highscore;
 }
 
-export async function writeUserData(user) {
-	try {
-		const userRef = await db.collection("users").doc(user.uid);
-		await userRef.set(user);
-	} catch (error) {
-		console.error(error);
-	}
-	"";
-}
-
 export async function updateHighscore(uid, highscore) {
 	if (highscore >= (await getHighscore(uid))) {
 		console.log("Updating highscore to: ", highscore);
@@ -47,3 +28,5 @@ export async function updateHighscore(uid, highscore) {
 			});
 	}
 }
+
+export default db;

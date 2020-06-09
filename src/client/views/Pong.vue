@@ -12,13 +12,33 @@
 			:height="size.y"
 			:viewBox="`${-size.x/2} ${-size.y/2} ${size.x} ${size.y}`"
 			class="game"
+			style="overflow: visible;"
 		>
-			<rect x="-300" y="-200" :width="size.x" :height="size.y" fill="#000" />
+			<rect :x="-size.x/2" :y="-size.y/2" :width="size.x" :height="size.y" fill="#000" />
+			<line
+				x1="0"
+				:y1="-size.y/2"
+				x2="0"
+				:y2="size.y/2"
+				stroke="#fff"
+				stroke-width="5"
+				stroke-dasharray="16"
+			/>
 			<rect
-				v-for="(paddle,index) in paddles.values()"
-				:key="index"
-				:x="paddle.pos.x - paddle.size.x / 2"
-				:y="paddle.pos.y - paddle.size.y / 2"
+				v-for="(wall, index) in walls"
+				:key="`wall-${index}`"
+				:x="wall.pos.x - wall.size.x / 2"
+				:y="wall.pos.y - wall.size.y / 2"
+				:width="wall.size.x"
+				:height="wall.size.y"
+				fill="transparent"
+				stroke="red"
+				stroke-width="2"
+			/>
+			<rect
+				v-for="(paddle, index) in paddles.values()"
+				:key="`paddle-${index}`"
+				:transform="`translate(${paddle.pos.x - paddle.size.x /2},${paddle.pos.y - paddle.size.y/2})`"
 				:width="paddle.size.x"
 				:height="paddle.size.y"
 				fill="#fff"
@@ -30,7 +50,6 @@
 				cy="0"
 				:transform="`translate(${ball.pos.x},${ball.pos.y})`"
 				:r="ball.radius"
-				:style="{transition: `transform ${1000 / tps}ms linear`}"
 				class="ball"
 			/>
 		</svg>
@@ -52,6 +71,7 @@ import Ball from "@common-classes/Ball";
 import Paddle from "@common-classes/Paddle";
 import Side from "@common-enums/Side";
 import Move from "@common-enums/Move";
+import Wall from "@common-classes/Wall";
 
 @Component({
 	components: {
@@ -70,6 +90,7 @@ export default class Pong extends Vue {
 		[Side.Left, new Paddle(new Vector2(), new Vector2(), new Vector2())],
 		[Side.Right, new Paddle(new Vector2(), new Vector2(), new Vector2())],
 	]);
+	private readonly walls: Wall[] = [];
 
 	private started = false;
 	private loop: number;
@@ -88,13 +109,31 @@ export default class Pong extends Vue {
 
 		socket.on(
 			"start",
-			({ tps, ball, size }: { tps: number; ball: Ball; size: { x: number; y: number } }) => {
+			({
+				tps,
+				ball,
+				size,
+				walls,
+			}: {
+				tps: number;
+				ball: Ball;
+				size: { x: number; y: number };
+				walls: Wall[];
+			}) => {
 				this.loading = false;
 				this.size.set(size.x, size.y);
 				this.started = true;
 				window.addEventListener("keydown", this.handleKeydown);
 				window.addEventListener("keyup", this.handleKeyup);
 				this.ball.set(ball);
+				walls.forEach(wall => {
+					this.walls.push(
+						new Wall(
+							new Vector2(wall.pos.x, wall.pos.y),
+							new Vector2(wall.size.x, wall.size.y)
+						)
+					);
+				});
 				this.tps = tps;
 				this.loop = <number>(<unknown>setInterval(() => this.tick(), 1000 / tps));
 			}
@@ -126,6 +165,7 @@ export default class Pong extends Vue {
 
 	private tick() {
 		this.ball.pos.add(this.ball.speed);
+		this.paddles.forEach(paddle => paddle.pos.add(paddle.speed));
 	}
 
 	private handleKeydown(e: KeyboardEvent) {

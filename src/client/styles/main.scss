@@ -38,4 +38,18 @@ a:visited {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+}
+
+button {
+	background-color: #4cafab;
+	border: 1px solid rgb(59, 138, 135);
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 6px 12px;
+	text-decoration: none;
 }
