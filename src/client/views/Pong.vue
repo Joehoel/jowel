@@ -24,7 +24,7 @@
 				stroke-width="5"
 				stroke-dasharray="16"
 			/>
-			<rect
+			<!-- <rect
 				v-for="(wall, index) in walls"
 				:key="`wall-${index}`"
 				:x="wall.pos.x - wall.size.x / 2"
@@ -34,7 +34,7 @@
 				fill="transparent"
 				stroke="red"
 				stroke-width="2"
-			/>
+			/>-->
 			<rect
 				v-for="(paddle, index) in paddles.values()"
 				:key="`paddle-${index}`"

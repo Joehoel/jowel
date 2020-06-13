@@ -12,7 +12,7 @@ export default class Game {
 	public readonly name: string;
 	public readonly players: Player[];
 	private readonly io: Namespace;
-	private readonly tps = 120;
+	private readonly tps = 200;
 
 	private readonly size = new Vector2(600, 400);
 	private readonly paddles: Map<Side, Paddle> = new Map<Side, Paddle>([
@@ -22,8 +22,6 @@ export default class Game {
 	private readonly walls: Wall[];
 	private readonly ball: Ball = new Ball(new Vector2(), new Vector2(), 6);
 	private tickTimer: number = -1;
-	private changedPaddles: Set<Paddle> = new Set<Paddle>();
-	private changedBall = false;
 
 	constructor(name: string, io: Server) {
 		this.name = name;
@@ -94,7 +92,6 @@ export default class Game {
 				default:
 					player.paddle.speed.set(0, 0);
 			}
-			this.changedPaddles.add(player.paddle);
 		});
 	}
 
@@ -111,10 +108,11 @@ export default class Game {
 
 	public startGame() {
 		const maxAngle = Math.PI / 6;
-		const angle = random([
-			random(-maxAngle, maxAngle),
-			random(Math.PI - maxAngle, Math.PI + maxAngle),
-		]);
+		// const angle = random([
+		// 	random(-maxAngle, maxAngle),
+		// 	random(Math.PI - maxAngle, Math.PI + maxAngle),
+		// ]);
+		const angle = random(-maxAngle, maxAngle);
 		const r = 400 / this.tps;
 		const ballSpeed = new Vector2(r * Math.cos(angle), r * Math.sin(angle));
 		this.ball.speed.set(ballSpeed);
@@ -149,41 +147,29 @@ export default class Game {
 			if (paddle.collides(topWall) || paddle.collides(bottomWall)) {
 				paddle.pos.subtract(paddle.speed);
 				paddle.speed.set(0, 0);
-				this.changedPaddles.add(paddle);
 			}
 		});
 
 		this.ball.pos.add(this.ball.speed);
 		if (this.ball.collides(topWall) || this.ball.collides(bottomWall)) {
-			// this.ball.pos.subtract(this.ball.speed);
 			this.ball.speed.multiply(1, -1);
-			// this.ball.pos.add(this.ball.speed);
-			this.changedBall = true;
 		}
 
 		if (this.ball.collides(rightWall) || this.ball.collides(leftWall)) {
-			// this.ball.pos.subtract(this.ball.speed);
 			this.ball.speed.multiply(-1, 1);
-			// this.ball.pos.add(this.ball.speed);
-			this.changedBall = true;
 		}
-		this.io.emit("ball", this.ball);
+
+		let ballCollisionAngle = this.ball.speed.getAngle();
+		ballCollisionAngle = this.ball.collisionAngle(this.paddles.get(Side.Left));
+		this.ball.speed.setAngle(ballCollisionAngle);
+		ballCollisionAngle = this.ball.collisionAngle(this.paddles.get(Side.Right));
+		this.ball.speed.setAngle(ballCollisionAngle);
+
 		this.paddles.forEach(paddle => {
 			const { pos, speed, size } = paddle;
 			const player = this.players.find(p => p.paddle === paddle);
 			this.io.emit("paddle", { pos, speed, size }, player.side);
 		});
-
-		// if (this.changedBall) {
-		// 	// this.io.emit("ball", this.ball);
-		// 	this.changedBall = false;
-		// }
-
-		// this.changedPaddles.forEach(paddle => {
-		// 	const { pos, speed, size } = paddle;
-		// 	const player = this.players.find(p => p.paddle === paddle);
-		// 	this.io.emit("paddle", { pos, speed, size }, player.side);
-		// 	this.changedPaddles.delete(paddle);
-		// });
+		this.io.emit("ball", this.ball);
 	}
 }

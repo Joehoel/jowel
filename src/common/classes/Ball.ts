@@ -1,6 +1,7 @@
 import Vector2 from "@common-classes/Vector2";
 import LivingEntity from "@common-classes/LivingEntity";
 import Wall from "./Wall";
+import Paddle from "./Paddle";
 
 export default class Ball extends LivingEntity {
 	public radius: number;
@@ -21,5 +22,9 @@ export default class Ball extends LivingEntity {
 			this.pos.y - this.radius < wall.pos.y - wall.size.y / 2 + wall.size.y &&
 			this.pos.y + this.radius > wall.pos.y - wall.size.y / 2
 		);
+	}
+
+	public collisionAngle(paddle: Paddle) {
+		return this.speed.getAngle();
 	}
 }

@@ -16,8 +16,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import Card from "@client-components/Card.vue";
 import Header from "@client-components/Header.vue";
 
-import socket from "@client-scripts/socket";
-
 import pong from "@client-assets/pong.png";
 import temp from "@client-assets/temp.jpg";
 
@@ -27,10 +25,6 @@ import temp from "@client-assets/temp.jpg";
 export default class Index extends Vue {
 	private temp = temp;
 	private pong = pong;
-	mounted() {
-		socket.on("message", console.log);
-		socket.on("start", console.log);
-	}
 }
 </script>
 

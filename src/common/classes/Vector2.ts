@@ -61,4 +61,28 @@ export default class Vector2 {
 			this.y -= y;
 		}
 	}
+
+	public setAngle(angle: number) {
+		const magnitude = this.getMagnitude();
+		this.x = Math.cos(angle) * magnitude;
+		this.y = Math.sin(angle) * magnitude;
+	}
+
+	public getAngle() {
+		return Math.atan(this.y / this.x);
+	}
+
+	public getMagnitude() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+
+	public setMagnitude(magnitude: number) {
+		const oldMagnitude = this.getMagnitude();
+		this.x = (this.x / oldMagnitude) * magnitude;
+		this.y = (this.y / oldMagnitude) * magnitude;
+	}
+
+	public normalize() {
+		this.setMagnitude(1);
+	}
 }

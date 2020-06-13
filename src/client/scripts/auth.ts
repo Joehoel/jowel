@@ -6,7 +6,6 @@ export async function login(email, password) {
 
 	try {
 		await auth.signInWithEmailAndPassword(email, password);
-		// closeModals();
 	} catch (e) {
 		console.error(e);
 	}
