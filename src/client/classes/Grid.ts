@@ -1,11 +1,18 @@
-export default class Grid {
-	static scale = 40;
-	static size = 600;
+import Vector2 from "@common-classes/Vector2";
 
-	static get rows() {
-		return this.size / this.scale;
+export default class Grid {
+	public scale: number;
+	public size: Vector2;
+
+	constructor(scale: number, size: Vector2) {
+		this.scale = scale;
+		this.size = size;
 	}
-	static get columns() {
-		return this.size / this.scale;
+
+	public get rows() {
+		return this.size.x / this.scale;
+	}
+	public get columns() {
+		return this.size.y / this.scale;
 	}
 }

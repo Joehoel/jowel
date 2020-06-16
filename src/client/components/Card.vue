@@ -1,14 +1,19 @@
 <template>
 	<div class="card">
 		<a :href="href">
-			<img class="preview" :src="image" alt="game" />
-			<h1 class="title">{{title}}</h1>
+			<div class="card-image">
+				<img class="preview" :src="image" alt="game" />
+			</div>
+			<div class="card-content">
+				<h1 class="title">{{title}}</h1>
+			</div>
 		</a>
 	</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import "@client-styles/main.scss";
 
 @Component({
 	components: {},
@@ -32,7 +37,7 @@ export default class Card extends Vue {
 	&:hover {
 		transform: translateY(-2%);
 		background-color: #e6e6e6;
-		/* background: rgb(233, 233, 233); */
+		cursor: pointer;
 	}
 
 	a {

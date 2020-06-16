@@ -14,6 +14,10 @@ router.get("/snake", (req: Request, res: Response, next: NextFunction) => {
 	res.sendFile("./snake.html", { root: "./dist/client" });
 });
 
+router.get("/chess", (req: Request, res: Response, next: NextFunction) => {
+	res.sendFile("./chess.html", { root: "./dist/client" });
+});
+
 router.get("/*", (req: Request, res: Response, next: NextFunction) => {
 	res.sendFile("./not_found.html", { root: "./dist/client" });
 });

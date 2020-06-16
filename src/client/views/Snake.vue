@@ -50,8 +50,6 @@ import HighscoreList from "@client-components/HighscoreList.vue";
 
 import { getUsers, getHighscore, updateHighscore } from "@client-scripts/db";
 import auth, { login, register } from "@client-scripts/auth";
-import Fruit from "@client-classes/Fruit";
-import { Snake as Snakee } from "@client-classes/Snake";
 import Vector2 from "@common-classes/Vector2";
 import Grid from "@client-classes/Grid";
 import { User } from "firebase";
@@ -64,7 +62,8 @@ export default class Snake extends Vue {
 
 	private size: Vector2 = new Vector2(600, 600);
 	private scale: number = this.size.x / 15;
-	private grid: Vector2 = new Vector2(this.size.x / this.scale, this.size.y / this.scale);
+	// private grid: Vector2 = new Vector2(this.size.x / this.scale, this.size.y / this.scale);
+	private grid: Grid = new Grid(this.scale, this.size);
 
 	private loop: number;
 	private tps: number = 10;
@@ -82,14 +81,14 @@ export default class Snake extends Vue {
 	private getHighscore = getHighscore;
 
 	private position: Vector2 = new Vector2(
-		(Math.floor(Math.random() * Grid.rows - 1) + 1) * this.scale,
-		(Math.floor(Math.random() * Grid.columns - 1) + 1) * this.scale
+		(Math.floor(Math.random() * this.grid.rows - 1) + 1) * this.scale,
+		(Math.floor(Math.random() * this.grid.columns - 1) + 1) * this.scale
 	);
 	private tail: Vector2[] = [];
 	private speed: Vector2 = new Vector2();
 	private fruit: Vector2 = new Vector2(
-		(Math.floor(Math.random() * Grid.rows - 1) + 1) * this.scale,
-		(Math.floor(Math.random() * Grid.columns - 1) + 1) * this.scale
+		(Math.floor(Math.random() * this.grid.rows - 1) + 1) * this.scale,
+		(Math.floor(Math.random() * this.grid.columns - 1) + 1) * this.scale
 	);
 
 	private async mounted() {
@@ -130,8 +129,8 @@ export default class Snake extends Vue {
 		this.check();
 		if (this.eat(this.fruit)) {
 			this.fruit = new Vector2(
-				(Math.floor(Math.random() * Grid.rows - 1) + 1) * this.scale,
-				(Math.floor(Math.random() * Grid.columns - 1) + 1) * this.scale
+				(Math.floor(Math.random() * this.grid.rows - 1) + 1) * this.scale,
+				(Math.floor(Math.random() * this.grid.columns - 1) + 1) * this.scale
 			);
 		}
 	}
@@ -215,10 +214,5 @@ export default class Snake extends Vue {
 	justify-content: space-between;
 	width: 600px;
 	margin-bottom: 1rem;
-}
-.game {
-	box-sizing: content-box;
-	border: 4px solid rgb(73, 73, 73);
-	box-shadow: 0px 0px 9px 3px rgba(0, 0, 0, 0.31);
 }
 </style>
