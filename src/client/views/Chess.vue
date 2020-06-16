@@ -1,33 +1,23 @@
 <template>
 	<main class="center">
-		<svg :width="size.x" :height="size.y" class="game" style="overflow: visible;">
-			<!-- <rect x="0" y="0" :width="size.x" :height="size.y" fill="#181818" /> -->
+		<svg :width="grid.size.x" :height="grid.size.y" class="game" style="overflow: visible;">
 			<rect
-				v-for="(row, index) in grid.rows"
-				:key="index"
-				:x="scale * col - scale"
-				:y="scale * row - scale"
-				:width="scale"
-				:height="scale"
-				:fill="row % 2 ? '#fff' : '#000'"
+				v-for="(_, n) in 64"
+				:key="n"
+				:x="(n % 8) * grid.scale"
+				:y="Math.floor(n / 8) * grid.scale"
+				:width="grid.scale"
+				:height="grid.scale"
+				:fill="(n + Math.floor(n / 8)) % 2 ? `white` : `black`"
 			/>
-			<!-- <rect
-					v-for="(col, index) in grid.columns"
-					:key="index"
-					:x="scale * col - scale"
-					:y="0"
-					:width="scale"
-					:height="scale"
-					:fill="col % 2 ? '#fff' : '#000'"
-			/>-->
 		</svg>
 	</main>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Vector2 from "../../common/classes/Vector2";
-import Grid from "../classes/Grid";
+import Vector2 from "@common-classes/Vector2";
+import Grid from "@client-classes/Grid";
 
 @Component({
 	components: {},
@@ -37,9 +27,7 @@ export default class Chess extends Vue {
 	private scale: number = this.size.x / 8;
 	private grid: Grid = new Grid(this.scale, this.size);
 
-	private mounted() {
-		console.log(this.scale);
-	}
+	private mounted() {}
 }
 </script>
 
