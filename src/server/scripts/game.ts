@@ -10,44 +10,49 @@ export default (server: Server) => {
 
 	io.on("connection", socket => {
 		socket.on("message", console.log);
+		socket.on("join", message => {
+			console.log(message);
+			// If game is pong do this
+			// Else if game is chess do other
 
-		let game: Game;
-		let player: Player;
+			let game: Game;
+			let player: Player;
 
-		const index = games.findIndex(game => game.players.length < 2);
+			const index = games.findIndex(game => game.players.length < 2);
 
-		if (index === -1) {
-			// console.log(rooms.length);
-			// console.log(index);
-			game = new Game(`game-${games.length}`, io);
+			if (index === -1) {
+				// console.log(rooms.length);
+				// console.log(index);
+				game = new Game(`game-${games.length}`, io);
 
-			games.push(game);
-			// console.log({ rooms });
-		} else {
-			game = games[index];
-		}
-
-		socket.on("ping", () => {
-			console.log("pinging");
-			socket.emit("pong");
-		});
-
-		game.addPlayer(socket);
-
-		if (game.players.length == 2) {
-			game.startGame();
-		}
-		// console.log(player);
-		// room.players.push(player);
-
-		socket.on("disconnect", () => {
-			game.removePlayer(socket);
-			if (game.isEmpty) {
-				games.splice(games.indexOf(game), 1);
+				games.push(game);
+				// console.log({ rooms });
+			} else {
+				game = games[index];
 			}
+
+			socket.on("ping", () => {
+				console.log("pinging");
+				socket.emit("pong");
+			});
+
+			game.addPlayer(socket);
+
+			if (game.players.length == 2) {
+				game.startGame();
+			}
+			// console.log(player);
+			// room.players.push(player);
+
+			socket.on("disconnect", () => {
+				game.removePlayer(socket);
+				if (game.isEmpty) {
+					games.splice(games.indexOf(game), 1);
+				}
+			});
+			socket.send(`${socket.id} joined ${game.name}`);
+			console.log(games.map(g => g.players.length));
 		});
-		socket.send(`${socket.id} joined ${game.name}`);
-		console.log(games.map(g => g.players.length));
 	});
 	return io;
 };

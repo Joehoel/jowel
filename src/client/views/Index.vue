@@ -5,9 +5,10 @@
 		</header>
 		<section class="center">
 			<div class="card-grid">
-				<Card href="/pong" title="Pong" :image="pong" />
+				<!-- TODO: Change back to original route -->
+				<Card href="/" title="Pong" :image="pong" />
 				<Card href="/snake" title="Snake" :image="temp" />
-				<Card href="/chess" title="Chess" :image="temp" />
+				<Card href="/" title="Chess" :image="temp" />
 			</div>
 		</section>
 	</main>

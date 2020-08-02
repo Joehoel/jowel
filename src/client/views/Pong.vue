@@ -100,12 +100,13 @@ export default class Pong extends Vue {
 	private keycodeToMove: Map<number, Move>;
 
 	private mounted() {
+		socket.emit("join", { game: "pong" });
+		socket.on("message", console.log);
+
 		this.keycodeToMove = new Map<number, Move>([
 			[38, Move.Up],
 			[40, Move.Down],
 		]);
-
-		socket.on("message", console.log);
 
 		socket.on(
 			"start",

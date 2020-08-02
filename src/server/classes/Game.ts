@@ -115,10 +115,12 @@ export default class Game {
 		const angle = random(-maxAngle, maxAngle);
 		const r = 400 / this.tps;
 		const ballSpeed = new Vector2(r * Math.cos(angle), r * Math.sin(angle));
+
 		this.ball.speed.set(ballSpeed);
 
 		const padding = this.paddles.get(Side.Left).size.x;
 		const centerOffset = this.width / 2 - padding;
+
 		this.paddles.get(Side.Left).pos.set(-centerOffset, 0);
 		this.paddles.get(Side.Right).pos.set(centerOffset, 0);
 		this.ball.pos.set(0, 0);
@@ -129,7 +131,9 @@ export default class Game {
 			size: this.size,
 			walls: this.walls,
 		});
+
 		this.io.emit("ball", { pos: this.ball.pos, speed: this.ball.speed });
+
 		this.paddles.forEach(({ pos, speed, size }, side) => {
 			this.io.emit("paddle", { pos, speed, size }, side);
 		});
